@@ -55,6 +55,10 @@ pub fn to_ascii(img: &image::DynamicImage, args: &args::Args) -> String {
                 char_pixel = select_dominant_color((red, green, blue), char_pixel);
             }
 
+            if args.matrix {
+                char_pixel = char_pixel.bright_green().to_string();
+            }
+
             ascii_img.push_str(&char_pixel);
         }
         ascii_img.push('\n');

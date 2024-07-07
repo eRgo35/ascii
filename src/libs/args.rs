@@ -20,4 +20,10 @@ pub struct Args {
 
     #[arg(long, default_value_t = 2)]
     pub pixel: usize,
+
+    #[arg(long, default_value_t = false)]
+    pub noresize: bool,
+
+    #[arg(long, default_value_t = false)]
+    pub matrix: bool,
 }
