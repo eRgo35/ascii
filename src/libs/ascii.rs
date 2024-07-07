@@ -3,86 +3,6 @@ use colored::Colorize;
 use image;
 use image::GenericImageView;
 
-fn grayscale_ascii(
-    img: &image::DynamicImage,
-    width: u32,
-    height: u32,
-    invert: bool,
-    pixel_size: usize,
-) -> String {
-    let mut ascii_img = String::new();
-
-    for y in 0..height {
-        for x in 0..width {
-            let pixel = img.get_pixel(x, y);
-
-            let red = pixel[0];
-            let green = pixel[1];
-            let blue = pixel[2];
-
-            let pixel_iterator: Vec<u16> = vec![red.into(), green.into(), blue.into()];
-            let darkest_color: &u16 = pixel_iterator.iter().min().unwrap();
-            let brightest_color: &u16 = pixel_iterator.iter().max().unwrap();
-
-            let mut brightness = ((darkest_color + brightest_color) / 2) as u8;
-
-            if invert {
-                brightness = 255 - brightness;
-            }
-
-            let char_pixel = select_char(&brightness).repeat(pixel_size);
-
-            ascii_img.push_str(&char_pixel);
-        }
-        ascii_img.push('\n');
-    }
-
-    ascii_img
-}
-
-fn colorful_ascii(
-    img: &image::DynamicImage,
-    width: u32,
-    height: u32,
-    invert: bool,
-    pixel_size: usize,
-) -> String {
-    let mut ascii_img = String::new();
-
-    for y in 0..height {
-        for x in 0..width {
-            let pixel = img.get_pixel(x, y);
-
-            let mut red = pixel[0];
-            let mut green = pixel[1];
-            let mut blue = pixel[2];
-
-            let pixel_iterator: Vec<u16> = vec![red.into(), green.into(), blue.into()];
-            let darkest_color: &u16 = pixel_iterator.iter().min().unwrap();
-            let brightest_color: &u16 = pixel_iterator.iter().max().unwrap();
-
-            let mut brightness = ((darkest_color + brightest_color) / 2) as u8;
-
-            if invert {
-                red = 255 - red;
-                green = 255 - green;
-                blue = 255 - blue;
-
-                brightness = 255 - brightness;
-            }
-
-            let mut char_pixel = select_char(&brightness).repeat(pixel_size);
-
-            char_pixel = select_dominant_color((red, green, blue), char_pixel);
-
-            ascii_img.push_str(&char_pixel);
-        }
-        ascii_img.push('\n');
-    }
-
-    ascii_img
-}
-
 fn select_char(brightness: &u8) -> String {
     let char = match brightness {
         0..=25 => " ",
@@ -103,17 +23,42 @@ fn select_char(brightness: &u8) -> String {
 fn select_dominant_color(pixel: (u8, u8, u8), char_pixel: String) -> String {
     let (red, green, blue) = pixel;
 
-    let char_pixel = char_pixel.truecolor(red, green, blue).to_string();
-
-    char_pixel
+    char_pixel.truecolor(red, green, blue).to_string()
 }
 
 pub fn to_ascii(img: &image::DynamicImage, args: &args::Args) -> String {
+    let mut ascii_img = String::new();
     let (width, height) = img.dimensions();
 
-    if args.colorful {
-        return colorful_ascii(img, width, height, args.invert, args.pixel);
+    for y in 0..height {
+        for x in 0..width {
+            let pixel = img.get_pixel(x, y);
+            let (mut red, mut green, mut blue) = (pixel[0], pixel[1], pixel[2]);
+
+            let pixel_iterator: Vec<u16> = vec![red.into(), green.into(), blue.into()];
+            let darkest_color: &u16 = pixel_iterator.iter().min().unwrap();
+            let brightest_color: &u16 = pixel_iterator.iter().max().unwrap();
+
+            let mut brightness = ((darkest_color + brightest_color) / 2) as u8;
+
+            if args.invert {
+                red = 255 - red;
+                green = 255 - green;
+                blue = 255 - blue;
+
+                brightness = 255 - brightness;
+            }
+
+            let mut char_pixel = select_char(&brightness).repeat(args.pixel);
+
+            if args.colorful {
+                char_pixel = select_dominant_color((red, green, blue), char_pixel);
+            }
+
+            ascii_img.push_str(&char_pixel);
+        }
+        ascii_img.push('\n');
     }
 
-    grayscale_ascii(img, width, height, args.invert, args.pixel)
+    ascii_img
 }
