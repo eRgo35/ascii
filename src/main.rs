@@ -5,8 +5,20 @@ fn main() {
     println!("ASCII Generator\n----------------");
 
     let args = libs::args::Args::parse();
+    let path = args.image.clone();
 
-    let mut img = libs::image::load_image(&args.image);
+    let mut img = if !path.is_empty() {
+        libs::image::load_image(&path)
+    } else {
+        match libs::image::load_image_from_stdin() {
+            Ok(img) => img,
+            Err(e) => {
+                eprintln!("Error: {e}");
+                std::process::exit(1);
+            }
+        }
+    };
+
     libs::image::print_size(&img);
 
     if !args.noresize {
