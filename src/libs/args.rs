@@ -74,6 +74,9 @@ pub enum Subcommands {
     },
 
     Vid {
+        #[arg(short, long, default_value_t = String::from(""))]
+        input: String,
+
         #[arg(long, default_value_t = false)]
         invert: bool,
 

@@ -9,6 +9,7 @@ use ffmpeg_next::software::scaling::{context::Context, flag::Flags};
 use ffmpeg_next::util::frame::video::Video;
 
 pub fn video(
+    input_path: String,
     invert: bool,
     colorful: bool,
     width: usize,
@@ -21,12 +22,17 @@ pub fn video(
 ) {
     ffmpeg_next::init().unwrap();
 
-    if let Ok(mut ictx) = input("bad_apple.webm") {
+    if input_path.is_empty() {
+        eprintln!("Error: No input path provided");
+        std::process::exit(1);
+    }
+
+    if let Ok(mut ictx) = input(&input_path) {
         let input = ictx
             .streams()
             .best(Type::Video)
             .ok_or(ffmpeg_next::Error::StreamNotFound)
-            .unwrap();
+            .expect("Failed to find video stream");
         let video_stream_index = input.index();
 
         let context_decoder =

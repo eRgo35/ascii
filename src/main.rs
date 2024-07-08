@@ -42,6 +42,7 @@ fn main() {
             );
         }
         Some(libs::args::Subcommands::Vid {
+            input,
             invert,
             colorful,
             width,
@@ -53,7 +54,7 @@ fn main() {
             lightmap,
         }) => {
             libs::vid_handler::video(
-                invert, colorful, width, height, pixel, noresize, matrix, nofill, lightmap,
+                input, invert, colorful, width, height, pixel, noresize, matrix, nofill, lightmap,
             );
         }
         None => {
