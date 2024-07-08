@@ -6,7 +6,7 @@ use nokhwa::{
     Camera,
 };
 
-pub fn video(
+pub fn camera(
     invert: bool,
     colorful: bool,
     width: usize,

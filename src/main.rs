@@ -37,12 +37,27 @@ fn main() {
             nofill,
             lightmap,
         }) => {
-            libs::cam_handler::video(
+            libs::cam_handler::camera(
+                invert, colorful, width, height, pixel, noresize, matrix, nofill, lightmap,
+            );
+        }
+        Some(libs::args::Subcommands::Vid {
+            invert,
+            colorful,
+            width,
+            height,
+            pixel,
+            noresize,
+            matrix,
+            nofill,
+            lightmap,
+        }) => {
+            libs::vid_handler::video(
                 invert, colorful, width, height, pixel, noresize, matrix, nofill, lightmap,
             );
         }
         None => {
-            eprintln!("No subcommand provided. Available subcommands: `gen`, `cam`");
+            eprintln!("No subcommand provided. Available subcommands: `gen`, `cam`, and `vid`");
             std::process::exit(1);
         }
     }

@@ -72,4 +72,33 @@ pub enum Subcommands {
         #[arg(long, default_value_t = String::from(""))]
         lightmap: String,
     },
+
+    Vid {
+        #[arg(long, default_value_t = false)]
+        invert: bool,
+
+        #[arg(long, default_value_t = false)]
+        colorful: bool,
+
+        #[arg(long, default_value_t = 80)]
+        width: usize,
+        
+        #[arg(long, default_value_t = 25)]
+        height: usize,
+
+        #[arg(long, default_value_t = 2)]
+        pixel: usize,
+
+        #[arg(long, default_value_t = false)]
+        noresize: bool,
+
+        #[arg(long, default_value_t = false)]
+        matrix: bool,
+
+        #[arg(long, default_value_t = false)]
+        nofill: bool,
+
+        #[arg(long, default_value_t = String::from(""))]
+        lightmap: String,
+    },
 }
