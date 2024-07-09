@@ -12,3 +12,4 @@ ffmpeg-next = "7.0.2"
 image = "0.24.9"
 nokhwa = { path = "../../Software/nokhwa", version = "0.10.4", features = ["input-native"] }
 video-rs = "0.8.1"
+openssl = { version = "0.10.35", features = ["vendored"] }
